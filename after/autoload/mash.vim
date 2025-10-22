@@ -1,4 +1,4 @@
-function! partshell#EditSh(bang, cmd, edit) abort
+function! mash#EditSh(bang, cmd, edit) abort
   "let l:result = systemlist(a:cmd)
   "if v:shell_error != 0
   "  echom "Non-zero exit status running ".a:cmd
@@ -22,7 +22,7 @@ function! partshell#EditSh(bang, cmd, edit) abort
   execute a:edit.(a:bang ? '!':'').' '.l:args_list
 endfunction
 
-function! partshell#GrepSh(bang, cmd, location)
+function! mash#GrepSh(bang, cmd, location)
   if exists('*getcmdwintype') && !empty(getcmdwintype())
     echom "Not valid in command-line window"
     return
@@ -39,7 +39,7 @@ function! partshell#GrepSh(bang, cmd, location)
   let &grepprg = l:original_grepprg
 endfunction
 
-function! partshell#MakeSh(bang, cmd, location)
+function! mash#MakeSh(bang, cmd, location)
   if exists('*getcmdwintype') && !empty(getcmdwintype())
     echom "Not valid in command-line window"
     return
@@ -56,7 +56,7 @@ function! partshell#MakeSh(bang, cmd, location)
   let &makeprg = l:original_makeprg
 endfunction
 
-function! partshell#Sh(bang, cmd, split) abort
+function! mash#Sh(bang, cmd, split) abort
   if exists('*getcmdwintype') && !empty(getcmdwintype())
     echom "Not valid in command-line window"
     return

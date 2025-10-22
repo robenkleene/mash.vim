@@ -5,7 +5,7 @@
 A couple of general advantages of the Mash approach when compared to other existing solutions to the same problems:
 
 1. **Flexibility:** For example, [`pbpaste`](https://ss64.com/mac/pbpaste.html) on macOS outputs the clipboard contents, so with `:Pshgrep pbpaste` Vim will parse `grep` output from the clipboard (e.g., the built-in `:grep` command with the `'grepprg'` variable make this more difficult).
-2. **Repeatability:** Since this approach only runs commands with arguments from the command line, like `:Pshgrep fd partshell`, it's easy to repeat (or refine) previous commands using Vim's command line history by hitting up arrow (e.g., as opposed to fuzzy finders, which present a custom UI, if you want to re-open the same file you have to go through that UI every time).
+2. **Repeatability:** Since this approach only runs commands with arguments from the command line, like `:Pshgrep fd mash`, it's easy to repeat (or refine) previous commands using Vim's command line history by hitting up arrow (e.g., as opposed to fuzzy finders, which present a custom UI, if you want to re-open the same file you have to go through that UI every time).
 
 ## The Way of Mash
 
@@ -34,11 +34,11 @@ Populates the argument list with the result of a shell command. Each line is int
 
 ### Example
 
-`:Pshargs fd partshell` uses [`fd`](https://github.com/sharkdp/fd) to populate the argument list with all the files with `partshell` in the name (recursively from the current directory, because the way `fd` works by default).
+`:Pshargs fd mash` uses [`fd`](https://github.com/sharkdp/fd) to populate the argument list with all the files with `mash` in the name (recursively from the current directory, because the way `fd` works by default).
 
 #### Built-In Alternative
 
-<p><code>args `fd partshell`</code> (but this won't handle matches with spaces in their filenames properly).</p>
+<p><code>args `fd mash`</code> (but this won't handle matches with spaces in their filenames properly).</p>
 
 ## Grep
 
@@ -48,13 +48,13 @@ Run the arguments as a `grep` program, populating the quickfix list with the mat
 
 #### Example
 
-`:Pshgrep rg --vimgrep partshell` uses [ripgrep](https://github.com/BurntSushi/ripgrep) to populate the quickfix list with all the lines that contain `partshell` (recursively from the current directory, because the way `rg` works by default).
+`:Pshgrep rg --vimgrep mash` uses [ripgrep](https://github.com/BurntSushi/ripgrep) to populate the quickfix list with all the lines that contain `mash` (recursively from the current directory, because the way `rg` works by default).
 
 #### Built-In Alternative
 
-`:set grepprg=rg\ --vimgrep | grep partshell` but that has the side effect of setting `'grepprg'` (which might be desirable! Setting `'grepprg'` to `rg` is a great alternative if the built-in `:grep` behavior isn't useful).
+`:set grepprg=rg\ --vimgrep | grep mash` but that has the side effect of setting `'grepprg'` (which might be desirable! Setting `'grepprg'` to `rg` is a great alternative if the built-in `:grep` behavior isn't useful).
 
-`:cexpr system('rg --vimgrep partshell')` will also likely work, although technically this uses `'errorformat'` instead of `'grepformat'` to parse matching lines (note that `%`, which can usually be used on the command line to reference the current file, will not work in this context).
+`:cexpr system('rg --vimgrep mash')` will also likely work, although technically this uses `'errorformat'` instead of `'grepformat'` to parse matching lines (note that `%`, which can usually be used on the command line to reference the current file, will not work in this context).
 
 ### `:Pshlg[rep][!]`
 
