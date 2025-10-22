@@ -2,6 +2,8 @@
 
 (Bangers &) Mash is a Vim plugin that mashes together existing Vim functionality with shell commands.
 
+All the commands start with `B`, the `B` prefix was chosen because the `!` to run a shell command in Vim is called a bang, and it also happens to be the same as the first letter of Bash, the most popular shell.
+
 A couple of general advantages of the Mash approach when compared to other existing solutions to the same problems:
 
 1. **Flexibility:** For example, [`pbpaste`](https://ss64.com/mac/pbpaste.html) on macOS outputs the clipboard contents, so with `:Bgrep pbpaste` Vim will parse `grep` output from the clipboard (e.g., the built-in `:grep` command with the `'grepprg'` variable make this more difficult).
@@ -15,7 +17,6 @@ A couple of general advantages of the Mash approach when compared to other exist
 
 ## Cheat Sheet
 
-All the commands start with `B`, the `B` prefix was chosen because the `!` to run a shell command in Vim is called a bang, and it's the same as the first letter of Bash, the most popular shell.
 
 - `Bg rg foo`: Populate the quickfix list from an `rg` search.
 - `Ba fd foo`: Populate the argument list from an `fd` search.
