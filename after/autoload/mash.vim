@@ -22,7 +22,7 @@ function! mash#EditSh(bang, cmd, edit) abort
   execute a:edit.(a:bang ? '!':'').' '.l:args_list
 endfunction
 
-function! mash#GrepSh(bang, cmd, location)
+function! mash#GrepSh(bang, cmd, location) abort
   if exists('*getcmdwintype') && !empty(getcmdwintype())
     echohl ErrorMsg | echomsg "Not valid in command-line window" | echohl None
     return
@@ -40,7 +40,7 @@ function! mash#GrepSh(bang, cmd, location)
   let &grepprg = l:original_grepprg
 endfunction
 
-function! mash#MakeSh(bang, cmd, location)
+function! mash#MakeSh(bang, cmd, location) abort
   if exists('*getcmdwintype') && !empty(getcmdwintype())
     echohl ErrorMsg | echomsg "Not valid in command-line window" | echohl None
     return
