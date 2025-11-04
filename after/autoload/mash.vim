@@ -1,4 +1,8 @@
 function! mash#EditSh(bang, cmd, edit) abort
+  if !executable(a:cmd)
+    echohl ErrorMsg | echomsg "Not executable: ".a:cmd | echohl None
+    return
+  endif
   "let l:result = systemlist(a:cmd)
   "if v:shell_error != 0
   "  echom "Non-zero exit status running ".a:cmd
@@ -24,9 +28,14 @@ endfunction
 
 function! mash#GrepSh(bang, cmd, location)
   if exists('*getcmdwintype') && !empty(getcmdwintype())
-    echom "Not valid in command-line window"
+    echohl ErrorMsg | echomsg "Not valid in command-line window" | echohl None
     return
   endif
+  if !executable(a:cmd)
+    echohl ErrorMsg | echomsg "Not executable: ".a:cmd | echohl None
+    return
+  endif
+
   let l:original_grepprg = &grepprg
   " The default way of running shell commands using `!` allows the use of `|`
   " to pipe unescaped, so reproduce that behavior here.
@@ -41,7 +50,11 @@ endfunction
 
 function! mash#MakeSh(bang, cmd, location)
   if exists('*getcmdwintype') && !empty(getcmdwintype())
-    echom "Not valid in command-line window"
+    echohl ErrorMsg | echomsg "Not valid in command-line window" | echohl None
+    return
+  endif
+  if !executable(a:cmd)
+    echohl ErrorMsg | echomsg "Not executable: ".a:cmd | echohl None
     return
   endif
   let l:original_makeprg = &makeprg
@@ -58,7 +71,11 @@ endfunction
 
 function! mash#Sh(bang, cmd, split) abort
   if exists('*getcmdwintype') && !empty(getcmdwintype())
-    echom "Not valid in command-line window"
+    echohl ErrorMsg | echomsg "Not valid in command-line window" | echohl None
+    return
+  endif
+  if !executable(a:cmd)
+    echohl ErrorMsg | echomsg "Not executable: ".a:cmd | echohl None
     return
   endif
 
