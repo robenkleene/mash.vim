@@ -95,6 +95,10 @@ The buffer will be named after the shell command, for example `Shnew git show` w
 
 `:new | r !git diff` but this adds an extra new line at the top and bottom of the output, and doesn't detect the file type. To solve these issues `:new | 0r !git diff ^J norm Gddgg | filetype detect` should work but doesn't seem to in practice (`^J` means do `CTRL-V_CTRL-J` which is the command separator to use after a `:!` to perform a another Vim command instead of piping to a shell command).
 
+### `:Sh[!]`
+
+The same as `:Shn[ew][!]` but also `set bufhidden=wipe`, so that when the buffer is closed it is removed from the buffer list (`buftype=nofile` is also set to make the buffer easy to close). This is designed to be appropriate to quickly view the output of a shell command without having a buffer stick around.
+
 ### `:She[new][!]`
 
 Open a new buffer containing the result of a shell command (like `:enew` this will fail unless unless `'hidden'` is set or `'autowriteall'` is set and the file can be written).
