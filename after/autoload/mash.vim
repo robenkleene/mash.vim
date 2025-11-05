@@ -57,7 +57,7 @@ function! mash#MakeSh(bang, cmd, location) abort
   let &makeprg = l:original_makeprg
 endfunction
 
-function! mash#Sh(bang, cmd, split) abort
+function! mash#Sh(bang, cmd, split, wipe = v:false) abort
   if exists('*getcmdwintype') && !empty(getcmdwintype())
     echohl ErrorMsg | echomsg "Not valid in command-line window" | echohl None
     return
@@ -101,6 +101,9 @@ function! mash#Sh(bang, cmd, split) abort
   endfor
   if a:bang
     setlocal buftype=nofile readonly nomodifiable
+  endif
+  if a:wipe
+    setlocal bufhidden=wipe buftype=nofile
   endif
   let &l:undolevels=l:oldundolevels
 endfunction
