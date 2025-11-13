@@ -63,12 +63,8 @@ function! mash#Sh(bang, cmd, split, wipe = v:false) abort
     return
   endif
 
-  " `system(a:cmd)` does not support `%` for the current file, so instead we
-  " use `execute 'silent! 0r !'.l:cmd` below which supports `%`, but since
-  " it's a new window, we need to reference the previous file
-  " let l:result = system(a:cmd)
-  " Use previous file for inline ` % `, and ending `%$`
-  let l:cmd = substitute(a:cmd, '\s%\(\s\|$\)', ' #\1', '')
+  " Support `%` and `#`
+  let l:cmd = expandcmd(a:cmd)
   let l:basename = fnameescape(a:cmd)
 
   if !a:bang || bufwinnr(l:basename) < 0
