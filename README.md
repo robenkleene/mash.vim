@@ -115,3 +115,21 @@ Open a new buffer on a new tab page containing the result of a shell command.
 
 Like `:Shn[ew][!]` but split vertically.
 
+## `:ShMake`, `:ShLmake`, `:ShGrep`, `:ShLgrep`, `:ShArgs`
+
+These are like the other version without the capitalized command but optimized. The original versions work like `:grep` and `:make`, which means they use the parent shell, show their output, then require hitting return. The versions with the capitalized commands are more opinionated:
+
+- `:ShMake`, `:ShLmake`, `:ShGrep`, `:ShLgrep`: Run in a subshell and show the quickfix or location list.
+- `:ShArgs`: Runs in a subshell.
+
+If it says it runs in a subshell, that means it won't require show results, or require hitting return.
+
+These can use simpler commands like `:Grep`, `:Make`, and `:Args` by adding the following to your `~/vim/after/plugin/mash.vim`:
+
+```
+command! -nargs=+ -complete=file_in_path Grep call mash#Make(<q-args>, "Grep")
+command! -nargs=+ -complete=shellcmd Make call mash#Make(<q-args>, "Make")
+command! -nargs=+ -bang -complete=shellcmd Args call mash#Args(<bang>0, <q-args>)
+```
+
+These versions of the commands were inspired by [Romain Lafourcade's excellent "Instant grep + quickfix" gist](https://gist.github.com/romainl/56f0c28ef953ffc157f36cc495947ab3).

@@ -103,3 +103,50 @@ function! mash#Sh(bang, cmd, split, wipe = v:false) abort
   endif
   let &l:undolevels=l:oldundolevels
 endfunction
+
+function! mash#Make(cmd, label) abort
+    let l:cmd = expandcmd(a:cmd)
+    let l:result = system(l:cmd)
+    if v:shell_error != 0
+      echohl ErrorMsg | echomsg "Non-zero exit status for ".a:label." command: ".l:cmd | echohl None
+      return
+    endif
+    cexpr l:result
+    if getqflist()->empty()
+      echohl WarningMsg | echomsg "No matches for ".a:label." command: ".l:cmd | echohl None
+      return
+    endif
+    cwindow
+    wincmd k
+endfunction
+
+function! mash#Lmake(cmd, label) abort
+    let l:cmd = expandcmd(a:cmd)
+    let l:result = system(l:cmd)
+    if v:shell_error != 0
+      echohl ErrorMsg | echomsg "Non-zero exit status for ".a:label." command: ".l:cmd | echohl None
+      return
+    endif
+    lexpr l:result
+    if getloclist()->empty()
+      echohl WarningMsg | echomsg "No matches for ".a:label." command: ".l:cmd | echohl None
+      return
+    endif
+    lwindow
+    wincmd k
+endfunction
+
+function! mash#Args(bang, cmd) abort
+  let l:result = systemlist(a:cmd)
+  if v:shell_error != 0
+    echohl ErrorMsg | echomsg "Non-zero exit status for Find command: ".a:cmd | echohl None
+    return
+  endif
+  let l:escaped_files = map(l:result, {_, v -> fnameescape(v)})
+  if l:escaped_files->empty()
+    echohl WarningMsg | echomsg "No files found for Find command: ".a:cmd | echohl None
+    return
+  endif
+  let l:args_list = join(l:escaped_files, ' ')
+  execute "args".(a:bang ? '!':'').' '.l:args_list
+endfunction
