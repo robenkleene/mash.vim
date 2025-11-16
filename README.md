@@ -128,7 +128,9 @@ These can use simpler commands like `:Grep`, `:Make`, and `:Args` by adding the 
 
 ```
 command! -nargs=+ -complete=file_in_path Grep call mash#Make(<q-args>, "Grep")
+command! -nargs=+ -complete=shellcmd Lgrep call mash#Lmake(<q-args>, "Lgrep")
 command! -nargs=+ -complete=shellcmd Make call mash#Make(<q-args>, "Make")
+command! -nargs=+ -complete=shellcmd Lmake call mash#Lmake(<q-args>, "Lmake")
 command! -nargs=+ -bang -complete=shellcmd Args call mash#Args(<bang>0, <q-args>)
 ```
 
