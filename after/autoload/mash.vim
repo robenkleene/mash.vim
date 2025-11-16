@@ -128,7 +128,7 @@ function! mash#Lmake(cmd, label) abort
       return
     endif
     lexpr l:result
-    if getloclist()->empty()
+    if getloclist(0)->empty()
       echohl WarningMsg | echomsg "No matches for ".a:label." command: ".l:cmd | echohl None
       return
     endif
