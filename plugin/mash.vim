@@ -1,6 +1,6 @@
 " Args
 command! -nargs=+ -bang -complete=shellcmd Shargs call mash#EditSh(<bang>0, <q-args>, 'args')
-command! -nargs=+ -bang -complete=shellcmd ShArgs call mash#EditSh(<bang>0, <q-args>)
+command! -nargs=+ -bang -complete=shellcmd ShArgs call mash#Args(<bang>0, <q-args>, 'args')
 
 " Grep
 command! -nargs=+ -bang -complete=shellcmd Shgrep call mash#GrepSh(<bang>0, <q-args>, 0)
