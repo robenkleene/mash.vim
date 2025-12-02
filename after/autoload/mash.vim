@@ -97,19 +97,19 @@ function! mash#Sh(bang, cmd, split, wipe = v:false) abort
 endfunction
 
 function! mash#Make(cmd, label) abort
-    let l:cmd = expandcmd(a:cmd)
-    let l:result = system(l:cmd)
-    if v:shell_error != 0
-      echohl ErrorMsg | echomsg "Non-zero exit status for ".a:label." command: ".l:cmd | echohl None
-      return
-    endif
-    cexpr l:result
-    if getqflist()->empty()
-      echohl WarningMsg | echomsg "No matches for ".a:label." command: ".l:cmd | echohl None
-      return
-    endif
-    cwindow
-    wincmd k
+  let l:cmd = shellescape(expandcmd(a:cmd))
+  let l:result = system(l:cmd)
+  if v:shell_error != 0
+    echohl ErrorMsg | echomsg "Non-zero exit status for ".a:label." command: ".l:cmd | echohl None
+    return
+  endif
+  cexpr l:result
+  if getqflist()->empty()
+    echohl WarningMsg | echomsg "No matches for ".a:label." command: ".l:cmd | echohl None
+    return
+  endif
+  cwindow
+  wincmd k
 endfunction
 
 function! mash#Lmake(cmd, label) abort
