@@ -81,6 +81,10 @@ function! mash#Sh(bang, cmd, split, wipe = v:false) abort
   endif
   execute 'silent! 0r !'.l:cmd
   norm Gddgg
+
+  " Remove any current filetype, e.g., if the user has a new filetype is set
+  " for all unnamed buffers
+  set filetype&
   filetype detect
   " Do naming after file type detect, this allows `ftplugin` to check
   " `eval('@%')` to see if this buffer is backed by a file before adding a
@@ -90,7 +94,6 @@ function! mash#Sh(bang, cmd, split, wipe = v:false) abort
     " (The buffer will continue to show up as `[No Name]`)
     try
       execute 'silent file '.l:basename.(i > 1 ? ' '.l:i : '')
-      silent file
       break
     catch
     endtry
