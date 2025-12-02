@@ -1,13 +1,13 @@
 function! mash#EditSh(bang, cmd, edit) abort
   let l:tmpfile = tempname()
-  execute '!' . a:cmd . ' | tee ' . l:tmpfile
+  let l:cmd = expandcmd(a:cmd)
+  execute '!' . l:cmd . ' | tee ' . l:tmpfile
   if !filereadable(l:tmpfile)
     return
   endif
   let l:result = readfile(l:tmpfile)
   call delete(l:tmpfile)
   if empty(l:result)
-    "echom "No results found running ".a:cmd
     return
   endif
   let l:escaped_files = map(l:result, {_, v -> fnameescape(v)})
@@ -22,9 +22,8 @@ function! mash#GrepSh(bang, cmd, location) abort
   endif
 
   let l:original_grepprg = &grepprg
-  " The default way of running shell commands using `!` allows the use of `|`
-  " to pipe unescaped, so reproduce that behavior here.
-  let &grepprg=escape(a:cmd, '|')
+  let l:cmd = expandcmd(a:cmd)
+  let &grepprg=l:cmd
   if a:location
     execute 'lgrep'.(a:bang ? '!':'')
   else
@@ -39,9 +38,8 @@ function! mash#MakeSh(bang, cmd, location) abort
     return
   endif
   let l:original_makeprg = &makeprg
-  " The default way of running shell commands using `!` allows the use of `|`
-  " to pipe unescaped, so reproduce that behavior here.
-  let &makeprg = escape(a:cmd, '|')
+  let l:cmd = expandcmd(a:cmd)
+  let &makeprg = l:cmd
   if a:location
     execute "lmake".(a:bang ? '!':'')
   else
@@ -56,7 +54,6 @@ function! mash#Sh(bang, cmd, split, wipe = v:false) abort
     return
   endif
 
-  " Support `%` and `#`
   let l:cmd = expandcmd(a:cmd)
   let l:basename = fnameescape(a:cmd)
 
