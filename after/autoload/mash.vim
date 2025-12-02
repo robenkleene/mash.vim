@@ -68,23 +68,22 @@ function! mash#Sh(bang, cmd, split, wipe = v:false) abort
   let l:basename = fnameescape(a:cmd)
 
   if !a:bang || bufwinnr(l:basename) < 0
-    execute a:split
+    execute 'noautocmd keepjumps '.a:split
   endif
   " Reset undo for this buffer
   let l:oldundolevels=&undolevels
   setlocal undolevels=-1
   let l:bufnr = bufnr(l:basename)
+
+  " If there's an existing buffer with this name and bang is true, delete it
   if a:bang && l:bufnr > 0
     execute 'buffer '.l:bufnr
-    enew
+    noautocmd keepjumps enew
     bd#
   endif
   execute 'silent! 0r !'.l:cmd
   norm Gddgg
 
-  " Remove any current filetype, e.g., if the user has a new filetype is set
-  " for all unnamed buffers
-  set filetype&
   filetype detect
   " Do naming after file type detect, this allows `ftplugin` to check
   " `eval('@%')` to see if this buffer is backed by a file before adding a
