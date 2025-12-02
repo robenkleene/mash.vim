@@ -97,7 +97,7 @@ function! mash#Sh(bang, cmd, split, wipe = v:false) abort
 endfunction
 
 function! mash#Make(cmd, label) abort
-  let l:cmd = shellescape(expandcmd(a:cmd))
+  let l:cmd = escape(expandcmd(a:cmd), '\')
   let l:result = system(l:cmd)
   if v:shell_error != 0
     echohl ErrorMsg | echomsg "Non-zero exit status for ".a:label." command: ".l:cmd | echohl None
