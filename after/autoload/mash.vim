@@ -1,8 +1,6 @@
 function! mash#EditSh(bang, cmd, edit) abort
   let l:tmpfile = tempname()
-  let l:cmd = substitute(a:cmd, '\\', "\x01", 'g')
-  let l:cmd = expandcmd(l:cmd)
-  let l:cmd = substitute(l:cmd, "\x01", '\\', 'g')
+  let l:cmd = s:Prepare(a:cmd)
   execute '!' . l:cmd . ' | tee ' . l:tmpfile
   if !filereadable(l:tmpfile)
     return
@@ -24,9 +22,7 @@ function! mash#GrepSh(bang, cmd, location) abort
   endif
 
   let l:original_grepprg = &grepprg
-  let l:cmd = substitute(a:cmd, '\\', "\x01", 'g')
-  let l:cmd = expandcmd(l:cmd)
-  let l:cmd = substitute(l:cmd, "\x01", '\\', 'g')
+  let l:cmd = s:Prepare(a:cmd)
   let &grepprg=l:cmd
   if a:location
     execute 'lgrep'.(a:bang ? '!':'')
@@ -42,9 +38,7 @@ function! mash#MakeSh(bang, cmd, location) abort
     return
   endif
   let l:original_makeprg = &makeprg
-  let l:cmd = substitute(a:cmd, '\\', "\x01", 'g')
-  let l:cmd = expandcmd(l:cmd)
-  let l:cmd = substitute(l:cmd, "\x01", '\\', 'g')
+  let l:cmd = s:Prepare(a:cmd)
   let &makeprg = l:cmd
   if a:location
     execute "lmake".(a:bang ? '!':'')
@@ -60,9 +54,7 @@ function! mash#Sh(bang, cmd, split, wipe = v:false) abort
     return
   endif
 
-  let l:cmd = substitute(a:cmd, '\\', "\x01", 'g')
-  let l:cmd = expandcmd(l:cmd)
-  let l:cmd = substitute(l:cmd, "\x01", '\\', 'g')
+  let l:cmd = s:Prepare(a:cmd)
   let l:basename = fnameescape(l:cmd)
 
   " If there's not a bang, or if the window doesn't exist, create a new split
@@ -112,9 +104,7 @@ function! mash#Sh(bang, cmd, split, wipe = v:false) abort
 endfunction
 
 function! mash#Make(cmd, label) abort
-  let l:cmd = substitute(a:cmd, '\\', "\x01", 'g')
-  let l:cmd = expandcmd(l:cmd)
-  let l:cmd = substitute(l:cmd, "\x01", '\\', 'g')
+  let l:cmd = s:Prepare(a:cmd)
   let l:result = system(l:cmd)
   if v:shell_error != 0
     echohl ErrorMsg | echomsg "Non-zero exit status for ".a:label." command: ".l:cmd | echohl None
@@ -130,9 +120,7 @@ function! mash#Make(cmd, label) abort
 endfunction
 
 function! mash#Lmake(cmd, label) abort
-  let l:cmd = substitute(a:cmd, '\\', "\x01", 'g')
-  let l:cmd = expandcmd(l:cmd)
-  let l:cmd = substitute(l:cmd, "\x01", '\\', 'g')
+  let l:cmd = s:Prepare(a:cmd)
   let l:result = system(l:cmd)
   if v:shell_error != 0
     echohl ErrorMsg | echomsg "Non-zero exit status for ".a:label." command: ".l:cmd | echohl None
@@ -148,9 +136,7 @@ function! mash#Lmake(cmd, label) abort
 endfunction
 
 function! mash#Args(bang, cmd) abort
-  let l:cmd = substitute(a:cmd, '\\', "\x01", 'g')
-  let l:cmd = expandcmd(l:cmd)
-  let l:cmd = substitute(l:cmd, "\x01", '\\', 'g')
+  let l:cmd = s:Prepare(a:cmd)
   let l:result = systemlist(l:cmd)
   if v:shell_error != 0
     echohl ErrorMsg | echomsg "Non-zero exit status for Find command: ".l:cmd | echohl None
@@ -163,4 +149,10 @@ function! mash#Args(bang, cmd) abort
   endif
   let l:args_list = join(l:escaped_files, ' ')
   execute "args".(a:bang ? '!':'').' '.l:args_list
+endfunction
+
+function! s:Prepare(cmd) abort
+  let l:cmd = substitute(a:cmd, '\\', "\x01", 'g')
+  let l:cmd = expandcmd(l:cmd)
+  return substitute(l:cmd, "\x01", '\\', 'g')
 endfunction
