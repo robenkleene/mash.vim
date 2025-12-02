@@ -1,11 +1,4 @@
 function! mash#EditSh(bang, cmd, edit) abort
-  "let l:result = systemlist(a:cmd)
-  "if v:shell_error != 0
-  "  echom "Non-zero exit status running ".a:cmd
-  "  return
-  "endif
-  " This temptfile based approach is hack-y but being able to see the shell
-  " output makes it easier to diagnose errors and unexpected results
   let l:tmpfile = tempname()
   execute '!' . a:cmd . ' | tee ' . l:tmpfile
   if !filereadable(l:tmpfile)
@@ -139,14 +132,15 @@ function! mash#Lmake(cmd, label) abort
 endfunction
 
 function! mash#Args(bang, cmd) abort
-  let l:result = systemlist(a:cmd)
+  let l:cmd = expandcmd(a:cmd)
+  let l:result = systemlist(l:cmd)
   if v:shell_error != 0
-    echohl ErrorMsg | echomsg "Non-zero exit status for Find command: ".a:cmd | echohl None
+    echohl ErrorMsg | echomsg "Non-zero exit status for Find command: ".l:cmd | echohl None
     return
   endif
   let l:escaped_files = map(l:result, {_, v -> fnameescape(v)})
   if l:escaped_files->empty()
-    echohl WarningMsg | echomsg "No files found for Find command: ".a:cmd | echohl None
+    echohl WarningMsg | echomsg "No files found for Find command: ".l:cmd | echohl None
     return
   endif
   let l:args_list = join(l:escaped_files, ' ')
