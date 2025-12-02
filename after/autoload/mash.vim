@@ -152,6 +152,8 @@ function! mash#Args(bang, cmd) abort
 endfunction
 
 function! s:Prepare(cmd) abort
+  " Remove backslashes (by replacing with a sentinel value then restoring)
+  " because `expandcmd` resolves backslashes.
   let l:cmd = substitute(a:cmd, '\\', "\x01", 'g')
   let l:cmd = expandcmd(l:cmd)
   return substitute(l:cmd, "\x01", '\\', 'g')
