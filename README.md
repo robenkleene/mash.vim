@@ -17,7 +17,6 @@ A couple of general advantages of the Mash approach when compared to other exist
 
 ## Cheat Sheet
 
-
 - `Shg rg foo`: Populate the quickfix list from an `rg` search.
 - `Sha fd foo`: Populate the argument list from an `fd` search.
 - `Shm make`: Run a compile command, populating the quickfix list with any errors.
