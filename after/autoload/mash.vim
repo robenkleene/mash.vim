@@ -22,7 +22,7 @@ function! mash#GrepSh(bang, cmd, location) abort
   endif
 
   let l:original_grepprg = &grepprg
-  let l:cmd = expandcmd(a:cmd)
+  let l:cmd = shellescape(expandcmd(a:cmd))
   let &grepprg=l:cmd
   if a:location
     execute 'lgrep'.(a:bang ? '!':'')
