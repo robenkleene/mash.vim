@@ -63,21 +63,29 @@ function! mash#Sh(bang, cmd, split, wipe = v:false) abort
   let l:cmd = substitute(a:cmd, '\\', "\x01", 'g')
   let l:cmd = expandcmd(l:cmd)
   let l:cmd = substitute(l:cmd, "\x01", '\\', 'g')
-  let l:basename = fnameescape(a:cmd)
+  let l:basename = fnameescape(l:cmd)
 
+  " If there's not a bang, or if the window doesn't exist, create a new split
+  " (I.e., don't create a new split if there's already an existing buffer that we'll re-use)
   if !a:bang || bufwinnr(l:basename) < 0
     execute 'noautocmd keepjumps '.a:split
   endif
+
   " Reset undo for this buffer
   let l:oldundolevels=&undolevels
   setlocal undolevels=-1
   let l:bufnr = bufnr(l:basename)
 
-  " If there's an existing buffer with this name and bang is true, delete it
+  " If there's an existing buffer with this name and bang is true
+  " delete the existing buffer, and replace it with a new one
   if a:bang && l:bufnr > 0
     execute 'buffer '.l:bufnr
     noautocmd keepjumps enew
-    bd#
+    " Use try to suppress error if `bufhidden=wipe` (because the previous buffer won't exist)
+    try
+      bd#
+    catch
+    endtry
   endif
   execute 'silent! 0r !'.l:cmd
   norm Gddgg
@@ -91,7 +99,6 @@ function! mash#Sh(bang, cmd, split, wipe = v:false) abort
     " (The buffer will continue to show up as `[No Name]`)
     try
       execute 'silent file '.l:basename.(i > 1 ? ' '.l:i : '')
-      break
     catch
     endtry
   endfor
