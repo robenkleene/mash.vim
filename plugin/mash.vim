@@ -17,7 +17,12 @@ command! -nargs=+ -complete=shellcmd ShLmake call mash#Lmake(<q-args>, "ShLmake"
 " Splits
 command! -nargs=+ -bang -complete=shellcmd Sh call mash#Sh(<bang>0, <q-args>, 'new', v:true)
 command! -nargs=+ -bang -complete=shellcmd Shenew call mash#Sh(<bang>0, <q-args>, 'enew')
+command! -nargs=+ -bang -complete=shellcmd ShEnew call mash#Sh(1, <q-args>, 'enew', v:true)
 command! -nargs=+ -bang -complete=shellcmd Shnew call mash#Sh(<bang>0, <q-args>, 'new')
+command! -nargs=+ -bang -complete=shellcmd ShNew call mash#Sh(1, <q-args>, 'new', v:true)
 command! -nargs=+ -bang -complete=shellcmd Shtabedit call mash#Sh(<bang>0, <q-args>, 'tabnew')
+command! -nargs=+ -bang -complete=shellcmd ShTabedit call mash#Sh(1, <q-args>, 'tabnew', v:true)
 command! -nargs=+ -bang -complete=shellcmd Shtabnew call mash#Sh(<bang>0, <q-args>, 'tabnew')
+command! -nargs=+ -bang -complete=shellcmd ShTabnew call mash#Sh(1, <q-args>, 'tabnew', v:true)
 command! -nargs=+ -bang -complete=shellcmd Shvnew call mash#Sh(<bang>0, <q-args>, 'vnew')
+command! -nargs=+ -bang -complete=shellcmd ShVnew call mash#Sh(1, <q-args>, 'vnew', v:true)

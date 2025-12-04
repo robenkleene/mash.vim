@@ -84,7 +84,7 @@ The same as `:Shgrep` but populate the location list instead of the quickfix lis
 
 Commands that create a new buffer containing the output of a shell command.
 
-The buffer will be named after the shell command, for example `Shnew git show` will create a buffer named `git show`. With a bang (`!`) the output will be read only (`setlocal buftype=nofile readonly nomodifiable`), won't prompt to save the buffer (e.g., `:qa` without a bang will still quit without saving the buffer) and the same buffer will be re-used for subsequent runs (without a bang, a new buffer will be created appending a number to the end, e.g., `git show 2`). These changes make `:shn!` more appropriate just as *a viewer* of shell output.
+The buffer will be named after the shell command, for example `Shnew git show` will create a buffer named `git show`.
 
 ### Example
 
@@ -100,11 +100,13 @@ The same as `:Shn[ew][!]` but also `set bufhidden=wipe`, so that when the buffer
 
 ### `:She[new][!]`
 
-Open a new buffer containing the result of a shell command (like `:enew` this will fail unless unless `'hidden'` is set or `'autowriteall'` is set and the file can be written).
+Open a new buffer containing the result of a shell command (like `:enew` this will fail unless `'hidden'` is set or `'autowriteall'` is set and the current buffer can be written).
 
 ### `:Shn[ew][!]`
 
 Open a new buffer in a new window containing the result of a shell command.
+
+With a bang (`!`) the output will be read only (`setlocal buftype=nofile readonly nomodifiable`), won't prompt to save the buffer (e.g., `:qa` without a bang will still quit without saving the buffer) and the same buffer will be re-used for subsequent runs (without a bang, a new buffer will be created appending a number to the end, e.g., `git show 2`). These changes make `:shn!` more appropriate just as *a viewer* of shell output.
 
 ### `:Shtabn[ew][!]`, `:Shtabe[dit][!]`
 
@@ -125,12 +127,8 @@ If it says it runs in a subshell, that means it won't require show results, or r
 
 These can use simpler commands like `:Grep`, `:Make`, and `:Args` by adding the following to your `~/vim/after/plugin/mash.vim`:
 
-```
-command! -nargs=+ -complete=file_in_path Grep call mash#Make(<q-args>, "Grep")
-command! -nargs=+ -complete=shellcmd Lgrep call mash#Lmake(<q-args>, "Lgrep")
-command! -nargs=+ -complete=shellcmd Make call mash#Make(<q-args>, "Make")
-command! -nargs=+ -complete=shellcmd Lmake call mash#Lmake(<q-args>, "Lmake")
-command! -nargs=+ -bang -complete=shellcmd Args call mash#Args(<bang>0, <q-args>)
-```
-
 These versions of the commands were inspired by [Romain Lafourcade's excellent "Instant grep + quickfix" gist](https://gist.github.com/romainl/56f0c28ef953ffc157f36cc495947ab3).
+
+## `:ShEnew`, `:ShNew`, `:ShTabedit`, `:ShTabnew`, `:ShVnew`
+
+The same as the uncapitalised versions, but like with `!` so the output will be read-only and the same buffer will be re-used, and `bufhidden=wipe` will be set so the buffer will automatically be deleted if it becomes hidden.
