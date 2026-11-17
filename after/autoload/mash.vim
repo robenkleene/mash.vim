@@ -105,8 +105,8 @@ endfunction
 
 function! mash#Make(cmd, label) abort
   let l:cmd = s:Prepare(a:cmd)
-  let l:result = system(l:cmd)
-  if v:shell_error != 0
+  let [l:result, l:status] = s:SystemList(l:cmd)
+  if l:status != 0
     echohl ErrorMsg | echomsg "Non-zero exit status for ".a:label." command: ".l:cmd | echohl None
     return
   endif
@@ -121,8 +121,8 @@ endfunction
 
 function! mash#Lmake(cmd, label) abort
   let l:cmd = s:Prepare(a:cmd)
-  let l:result = system(l:cmd)
-  if v:shell_error != 0
+  let [l:result, l:status] = s:SystemList(l:cmd)
+  if l:status != 0
     echohl ErrorMsg | echomsg "Non-zero exit status for ".a:label." command: ".l:cmd | echohl None
     return
   endif
@@ -137,8 +137,8 @@ endfunction
 
 function! mash#Args(bang, cmd) abort
   let l:cmd = s:Prepare(a:cmd)
-  let l:result = systemlist(l:cmd)
-  if v:shell_error != 0
+  let [l:result, l:status] = s:SystemList(l:cmd)
+  if l:status != 0
     echohl ErrorMsg | echomsg "Non-zero exit status for Find command: ".l:cmd | echohl None
     return
   endif
@@ -149,6 +149,38 @@ function! mash#Args(bang, cmd) abort
   endif
   let l:args_list = join(l:escaped_files, ' ')
   execute "args".(a:bang ? '!':'').' '.l:args_list
+endfunction
+
+" Returns `[<output lines>, <exit status>]`. MacVim's GUI can't interrupt
+" `systemlist()` because its `wait4pid()` ignores `got_int`, so there the
+" command runs as a job instead, and Ctrl-C during `sleep` raises
+" `Vim:Interrupt`, which stops the job's process group with `job_stop()`.
+function! s:SystemList(cmd) abort
+  if !(has('gui_macvim') && has('gui_running'))
+    let l:result = systemlist(a:cmd)
+    return [l:result, v:shell_error]
+  endif
+
+  let l:result = []
+  " `'err_io': 'out'` merges stderr like `systemlist()` does with `'shellredir'`
+  let l:job = job_start([&shell] + split(&shellcmdflag) + [a:cmd], {
+        \ 'in_io': 'null',
+        \ 'err_io': 'out',
+        \ 'out_cb': {_, line -> add(l:result, line)},
+        \ })
+  let l:channel = job_getchannel(l:job)
+  try
+    " Also wait for `ch_status()` to leave `open`/`buffered`, because output
+    " can still be buffered after `job_status()` reports `dead`
+    while job_status(l:job) ==# 'run'
+          \ || index(['open', 'buffered'], ch_status(l:channel)) >= 0
+      sleep 10m
+    endwhile
+  catch /^Vim:Interrupt$/
+    call job_stop(l:job, 'int')
+    return [[], -1]
+  endtry
+  return [l:result, job_info(l:job).exitval]
 endfunction
 
 function! s:Prepare(cmd) abort
